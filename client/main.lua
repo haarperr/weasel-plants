@@ -117,8 +117,8 @@ mainLoop = function() -- the main loop only 1 that is needed
                         DrawMarker(27, Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
                         if dist <= 0.7 then
                             local infoLoc = vector3(Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.15)
-                            ESX.Game.Utils.DrawText3D(Instance.Plants[i].Coords, "Stage ~g~"..Instance.Plants[i].Stage.."~w~/"..#Config.Plants[Instance.Plants[i].Type].Stages)
-                            ESX.Game.Utils.DrawText3D(infoLoc, "Press [~g~E~w~] to harvest")
+                            DrawText3D(Instance.Plants[i].Coords, "Stage ~g~"..Instance.Plants[i].Stage.."~w~/"..#Config.Plants[Instance.Plants[i].Type].Stages)
+                            DrawText3D(infoLoc, "Press [~g~E~w~] to harvest")
                             if IsControlJustReleased(0, 153) then
                                 Instance.Plants[i].Harvesting = true
                                 TriggerEvent("mythic_progbar:client:progress", {
