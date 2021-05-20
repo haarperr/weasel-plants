@@ -19,6 +19,7 @@ plantSeed = function(plant, source) -- Add plant to DB and to all clients
         ['@type'] = plant.Type
     },function(id)
         plant.ID = id
+        plant.Time = os.time()
         Instance.insert(plant)
         if Config.Debug then
             print("New plant has been planted at "..plant.Coords.." With a ID of ".. plant.ID)

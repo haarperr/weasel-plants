@@ -10,12 +10,12 @@ Config = {
             Item = "weed",
             MaxAngle = 0.6,
             Stages = {
-                {model = `prop_weed_02`, offset = vector3(0,0,-2), time = 1},
-                {model = `prop_weed_02`, offset = vector3(0,0,-1.8), time = 1},
-                {model = `prop_weed_02`, offset = vector3(0,0,-1.4), time = 1},
-                {model = `prop_weed_02`, offset = vector3(0,0,-1), time = 1},
-                {model = `prop_weed_01`, offset = vector3(0,0,-1.5), time = 1, yield = {15, 25}},
-                {model = `prop_weed_01`, offset = vector3(0,0,-1), time = 1, yield = {20, 30}}
+                {model = `prop_weed_02`, offset = vector3(0,0,-2), time = 60},
+                {model = `prop_weed_02`, offset = vector3(0,0,-1.8), time = 60},
+                {model = `prop_weed_02`, offset = vector3(0,0,-1.4), time = 60},
+                {model = `prop_weed_02`, offset = vector3(0,0,-1), time = 60},
+                {model = `prop_weed_01`, offset = vector3(0,0,-1.5), time = 60, yield = {15, 25}},
+                {model = `prop_weed_01`, offset = vector3(0,0,-1), time = 520, yield = {20, 30}}
             },
             Soil = {
                 [2409420175] = 1.0,
@@ -42,12 +42,12 @@ Config = {
             Item = "coca_leaf",
             MaxAngle = 0.6,
             Stages = {
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-2.3), time = 30},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-2.1), time = 30},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.8), time = 30},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.6), time = 30},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.54), time = 30, yield = {15, 25}},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.45), time = 30, yield = {20, 30}}
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-2.3), time = 80},
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-2.1), time = 80},
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.8), time = 80},
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.6), time = 80},
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.54), time = 80, yield = {15, 25}},
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.45), time = 520, yield = {20, 30}}
             },
             Soil = {
                 [2409420175] = 1.0,

@@ -24,7 +24,7 @@ addObject = function(index) -- Add the plants object to the game
         end
     end
     if not HasModelLoaded(model) then
-        Citizen.Trace("Failed to load model for growth stage " .. stage ..", but will retry shortly!\n")
+        Citizen.Trace("Failed to load model for growth stage, but will retry shortly!\n")
         Citizen.Wait(2500)
     else
         local offset = Config.Plants[Instance.Plants[index].Type].Stages[Instance.Plants[index].Stage].offset or vector3(0,0,0)

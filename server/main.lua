@@ -64,6 +64,7 @@ mainLoop = function() -- Scarry server main loop
                     end
                 end
             end
+            Citizen.Wait(1000)
         end
     end)
 end

@@ -37,7 +37,7 @@ end)
 RegisterNetEvent("weasel-plants:removePlant") -- RemovePlant will remvoe a plant with a matching id from table and delete its object
 AddEventHandler("weasel-plants:removePlant", function(plant)
     for i = 1, #Instance.Plants, 1 do
-        if Instance.Plants[i].ID == plant.ID then
+        if Instance.Plants[i] and Instance.Plants[i].ID == plant.ID then
             DeleteObject(Instance.Plants[i].Object)
             table.remove(Instance.Plants, i)
         end
@@ -78,6 +78,9 @@ mainLoop = function() -- the main loop only 1 that is needed
             if Instance.Plants and #Instance.Plants > 0 then
                 local coords = GetEntityCoords(GetPlayerPed(-1))
                 for i = 1, #Instance.Plants, 1 do
+                    if not Instance.Plants[i] then
+                        break
+                    end
                     if Instance.Plants[i].Object == nil then -- If there is no object for the plant create one
                        addObject(i)
                     end
