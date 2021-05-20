@@ -101,10 +101,18 @@ mainLoop = function() -- the main loop only 1 that is needed
                     if not Instance.Plants[i] then
                         break
                     end
-                    if Instance.Plants[i].Object == nil then -- If there is no object for the plant create one
-                       addObject(i)
-                    end
                     local dist = #(Instance.Plants[i].Coords - coords)
+                    if dist <= Config.DrawDistance then
+                        if Instance.Plants[i].Object == nil then -- If there is no object for the plant create one
+                            addObject(i)
+                        end
+                    else
+                        if Instance.Plants[i].Object ~= nil then -- If there is a object for the plant delete it
+                            DeleteObject(Instance.Plants[i].Object)
+                            Instance.Plants[i].Object = nil
+                        end
+                    end
+                    
                     if dist <= 1.5 and not Instance.Plants[i].Harvesting then
                         DrawMarker(27, Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
                         if dist <= 0.7 then
