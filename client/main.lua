@@ -25,8 +25,28 @@ AddEventHandler("weasel-plants:plantSeed", function(item)
         end
         return
     end
-
-    plantSeed(type)
+    Citizen.Wait(500)
+    TriggerEvent("mythic_progbar:client:progress", {
+        name = "plant_seed",
+        duration = 10000,
+        label = "Planting Seed",
+        useWhileDead = false,
+        canCancel = false,
+        controlDisables = {
+            disableMovement = true,
+            disableCarMovement = true,
+            disableMouse = false,
+            disableCombat = true,
+        },
+        animation = {
+            animDict = "amb@world_human_gardener_plant@male@base",
+            anim = "base",
+        }
+    }, function(status)
+        if not status then
+            plantSeed(type)
+        end
+    end)
 end)
 
 RegisterNetEvent("weasel-plants:addPlant") -- addPLant will add a plant to the table
@@ -85,14 +105,39 @@ mainLoop = function() -- the main loop only 1 that is needed
                        addObject(i)
                     end
                     local dist = #(Instance.Plants[i].Coords - coords)
-                    if dist <= 1.5 then
+                    if dist <= 1.5 and not Instance.Plants[i].Harvesting then
                         DrawMarker(27, Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
                         if dist <= 0.7 then
                             local infoLoc = vector3(Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.15)
                             ESX.Game.Utils.DrawText3D(Instance.Plants[i].Coords, "Stage ~g~"..Instance.Plants[i].Stage.."~w~/"..#Config.Plants[Instance.Plants[i].Type].Stages)
                             ESX.Game.Utils.DrawText3D(infoLoc, "Press [~g~E~w~] to harvest")
                             if IsControlJustReleased(0, 153) then
-                                TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[i]) -- trigger the server event to harvest a plant
+                                Instance.Plants[i].Harvesting = true
+                                TriggerEvent("mythic_progbar:client:progress", {
+                                    name = "harvesting_Plant",
+                                    duration = 10000,
+                                    label = "Harvesting plant",
+                                    useWhileDead = false,
+                                    canCancel = false,
+                                    controlDisables = {
+                                        disableMovement = true,
+                                        disableCarMovement = true,
+                                        disableMouse = false,
+                                        disableCombat = true,
+                                    },
+                                    animation = {
+                                        animDict = "amb@world_human_gardener_plant@male@base",
+                                        anim = "base",
+                                    }
+                                }, function(status)
+                                    if not status then
+                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[i])  -- trigger the server event to harvest a plant
+                                    end
+                                end)
+                                
+                                
+                               
+                               
                                 Citizen.Wait(1000) -- Wait some time to prevent spam E cheez
                             end
                         end

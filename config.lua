@@ -14,8 +14,8 @@ Config = {
                 {model = `prop_weed_02`, offset = vector3(0,0,-1.8), time = 60},
                 {model = `prop_weed_02`, offset = vector3(0,0,-1.4), time = 60},
                 {model = `prop_weed_02`, offset = vector3(0,0,-1), time = 60},
-                {model = `prop_weed_01`, offset = vector3(0,0,-1.5), time = 60, yield = {15, 25}},
-                {model = `prop_weed_01`, offset = vector3(0,0,-1), time = 520, yield = {20, 30}}
+                {model = `prop_weed_01`, offset = vector3(0,0,-1.5), time = 60, yield = {100, 125}},
+                {model = `prop_weed_01`, offset = vector3(0,0,-1), time = 520, yield = {130, 160}}
             },
             Soil = {
                 [2409420175] = 1.0,
@@ -46,8 +46,8 @@ Config = {
                 {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-2.1), time = 80},
                 {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.8), time = 80},
                 {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.6), time = 80},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.54), time = 80, yield = {15, 25}},
-                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.45), time = 520, yield = {20, 30}}
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.54), time = 80, yield = {800, 1000}},
+                {model = `p_int_jewel_plant_02`, offset = vector3(0,0,-1.45), time = 520, yield = {1100, 1700}}
             },
             Soil = {
                 [2409420175] = 1.0,
