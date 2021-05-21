@@ -1,5 +1,5 @@
 ESX = nil
-Instance = {Started = false, Plants = {}}
+Instance = {Started = false, Plants = {}, ClosePlants = {}}
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -88,39 +88,80 @@ AddEventHandler('onResourceStop', function(resourceName) -- delete all objects w
     end
 end)
 
-mainLoop = function() -- the main loop only 1 that is needed
+
+closeLoop = function() -- close loop, for performance find plants that are close and add them to clsoe plants every 3 secounds
+    Citizen.CreateThread(function() 
+        while true do
+            Citizen.Wait(3000)
+            local coords = GetEntityCoords(GetPlayerPed(-1))
+            for i = 1, #Instance.Plants, 1 do
+                if not Instance.Plants[i] then
+                    break
+                end
+
+                if not Instance.Plants[i].Close then 
+                    local dist = #(Instance.Plants[i].Coords - coords)
+                    if dist <= 100 then
+                        Instance.Plants[i].Close = true
+                        table.insert( Instance.ClosePlants, i )
+                    end
+                end
+            end
+        end
+    end)
+end
+
+mainLoop = function() -- the main loop 
     if Instance.Started then return end -- if main loop already started dont start it again
     Instance.Started = true -- set main loop as started
+
+    closeLoop()
 
     Citizen.CreateThread(function() 
         while true do
             Wait(0)
-            if Instance.Plants and #Instance.Plants > 0 then
+            if Instance.ClosePlants and #Instance.ClosePlants > 0 then
                 local coords = GetEntityCoords(GetPlayerPed(-1))
-                for i = 1, #Instance.Plants, 1 do
-                    if not Instance.Plants[i] then
+                for i = 1, #Instance.ClosePlants, 1 do
+                    if not Instance.Plants[Instance.ClosePlants[i]] then
+                        table.remove( Instance.ClosePlants, i )
+                        Instance.Plants[i].Close = false
                         break
                     end
-                    local dist = #(Instance.Plants[i].Coords - coords)
+                    local dist = #(Instance.Plants[Instance.ClosePlants[i]].Coords - coords)
+
+                    if dist > 100 then -- if we are far remove it
+                        table.remove( Instance.ClosePlants, i )
+                        Instance.Plants[i].Close = false
+                        break
+                    end
+
                     if dist <= Config.DrawDistance then
-                        if Instance.Plants[i].Object == nil then -- If there is no object for the plant create one
-                            addObject(i)
+                        if Instance.Plants[Instance.ClosePlants[i]].Object == nil then -- If there is no object for the plant create one
+                            addObject(Instance.ClosePlants[i])
                         end
                     else
-                        if Instance.Plants[i].Object ~= nil then -- If there is a object for the plant delete it
+                        if Instance.Plants[Instance.ClosePlants[i]].Object ~= nil then -- If there is a object for the plant delete it
                             DeleteObject(Instance.Plants[i].Object)
-                            Instance.Plants[i].Object = nil
+                            Instance.Plants[Instance.ClosePlants[i]].Object = nil
                         end
                     end
                     
-                    if dist <= 1.5 and not Instance.Plants[i].Harvesting then
-                        DrawMarker(27, Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
+                    if dist <= 1.5 and not Instance.Plants[Instance.ClosePlants[i]].Harvesting then
+                        DrawMarker(27, Instance.Plants[Instance.ClosePlants[i]].Coords.x, 
+                        Instance.Plants[Instance.ClosePlants[i]].Coords.y, 
+                        Instance.Plants[Instance.ClosePlants[i]].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
+
                         if dist <= 0.7 then
-                            local infoLoc = vector3(Instance.Plants[i].Coords.x, Instance.Plants[i].Coords.y, Instance.Plants[i].Coords.z-0.15)
-                            DrawText3D(Instance.Plants[i].Coords, "Stage ~g~"..Instance.Plants[i].Stage.."~w~/"..#Config.Plants[Instance.Plants[i].Type].Stages)
+                            local infoLoc = vector3(Instance.Plants[Instance.ClosePlants[i]].Coords.x, 
+                            Instance.Plants[Instance.ClosePlants[i]].Coords.y, Instance.Plants[Instance.ClosePlants[i]].Coords.z-0.15)
+
+                            DrawText3D(Instance.Plants[Instance.ClosePlants[i]].Coords, 
+                            "Stage ~g~"..Instance.Plants[Instance.ClosePlants[i]].Stage.."~w~/"..#Config.Plants[Instance.Plants[Instance.ClosePlants[i]].Type].Stages)
+
                             DrawText3D(infoLoc, "Press [~g~E~w~] to harvest")
                             if IsControlJustReleased(0, 153) then
-                                Instance.Plants[i].Harvesting = true
+                                Instance.Plants[Instance.ClosePlants[i]].Harvesting = true
                                 TriggerEvent("mythic_progbar:client:progress", {
                                     name = "harvesting_Plant",
                                     duration = 10000,
@@ -139,14 +180,9 @@ mainLoop = function() -- the main loop only 1 that is needed
                                     }
                                 }, function(status)
                                     if not status then
-                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[i])  -- trigger the server event to harvest a plant
+                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[Instance.ClosePlants[i]])  -- trigger the server event to harvest a plant   
                                     end
                                 end)
-                                
-                                
-                               
-                               
-                                Citizen.Wait(1000) -- Wait some time to prevent spam E cheez
                             end
                         end
                     end 
