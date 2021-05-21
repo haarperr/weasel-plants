@@ -49,7 +49,7 @@ mainLoop = function() -- Scarry server main loop
             local plantsHandled = 0
             for i = 1, #Instance.Plants, 1 do
                 Citizen.Wait(0)
-                if plant = nil then break end 
+                if plant == nil then break end 
                 local plant = Instance.Plants[i] -- all tables in lua are handled as pointers so changes to these local vars will effect main Instance
                 local plantConfig = Config.Plants[plant.Type]
                 local plantStage = plantConfig.Stages[plant.Stage]
