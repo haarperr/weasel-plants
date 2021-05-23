@@ -103,7 +103,11 @@ closeLoop = function() -- close loop, for performance find plants that are close
                     local dist = #(Instance.Plants[i].Coords - coords)
                     if dist <= 100 then
                         Instance.Plants[i].Close = true
-                        table.insert( Instance.ClosePlants, i )
+                        table.insert( Instance.ClosePlants, {index = i, updated = false} )
+                        Instance.Plants[i].ClosePlantIndex = #Instance.ClosePlants
+                    elseif Instance.Plants[i].ClosePlantndex then
+                        table.remove(Instance.ClosePlants, Instance.Plants[i].ClosePlantIndex) 
+                        Instance.Plants[i].ClosePlantIndex = nil
                     end
                 end
             end
@@ -123,12 +127,12 @@ mainLoop = function() -- the main loop
             if Instance.ClosePlants and #Instance.ClosePlants > 0 then
                 local coords = GetEntityCoords(GetPlayerPed(-1))
                 for i = 1, #Instance.ClosePlants, 1 do
-                    if not Instance.Plants[Instance.ClosePlants[i]] then
+                    if not Instance.Plants[Instance.ClosePlants[i].index] then
                         table.remove( Instance.ClosePlants, i )
                         Instance.Plants[i].Close = false
                         break
                     end
-                    local dist = #(Instance.Plants[Instance.ClosePlants[i]].Coords - coords)
+                    local dist = #(Instance.Plants[Instance.ClosePlants[i].index].Coords - coords)
 
                     if dist > 100 then -- if we are far remove it
                         table.remove( Instance.ClosePlants, i )
@@ -137,31 +141,36 @@ mainLoop = function() -- the main loop
                     end
 
                     if dist <= Config.DrawDistance then
-                        if Instance.Plants[Instance.ClosePlants[i]].Object == nil then -- If there is no object for the plant create one
-                            addObject(Instance.ClosePlants[i])
+                        if Instance.Plants[Instance.ClosePlants[i].index].Object == nil then -- If there is no object for the plant create one
+                            
+                            addObject(Instance.ClosePlants[i].index)
+                            if not Instance.ClosePlants[i].updated then
+                                TriggerServerEvent("weasel-plants:updatePlant", Instance.Plants[Instance.ClosePlants[i].index])
+                                Instance.ClosePlants[i].updated = true
+                            end
                         end
                     else
-                        if Instance.Plants[Instance.ClosePlants[i]].Object ~= nil then -- If there is a object for the plant delete it
-                            DeleteObject(Instance.Plants[i].Object)
-                            Instance.Plants[Instance.ClosePlants[i]].Object = nil
+                        if Instance.Plants[Instance.ClosePlants[i].index].Object ~= nil then -- If there is a object for the plant delete it
+                            DeleteObject(Instance.Plants[Instance.ClosePlants[i].index].Object)
+                            Instance.Plants[Instance.ClosePlants[i].index].Object = nil
                         end
                     end
                     
-                    if dist <= 1.5 and not Instance.Plants[Instance.ClosePlants[i]].Harvesting then
-                        DrawMarker(27, Instance.Plants[Instance.ClosePlants[i]].Coords.x, 
-                        Instance.Plants[Instance.ClosePlants[i]].Coords.y, 
-                        Instance.Plants[Instance.ClosePlants[i]].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
+                    if dist <= 1.5 and not Instance.Plants[Instance.ClosePlants[i].index].Harvesting then
+                        DrawMarker(27, Instance.Plants[Instance.ClosePlants[i].index].Coords.x, 
+                        Instance.Plants[Instance.ClosePlants[i].index].Coords.y, 
+                        Instance.Plants[Instance.ClosePlants[i].index].Coords.z-0.95, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 0, 255, 0, 50, false, true, 2, nil, nil, false)
 
                         if dist <= 0.7 then
-                            local infoLoc = vector3(Instance.Plants[Instance.ClosePlants[i]].Coords.x, 
-                            Instance.Plants[Instance.ClosePlants[i]].Coords.y, Instance.Plants[Instance.ClosePlants[i]].Coords.z-0.15)
+                            local infoLoc = vector3(Instance.Plants[Instance.ClosePlants[i].index].Coords.x, 
+                            Instance.Plants[Instance.ClosePlants[i].index].Coords.y, Instance.Plants[Instance.ClosePlants[i].index].Coords.z-0.15)
 
-                            DrawText3D(Instance.Plants[Instance.ClosePlants[i]].Coords, 
-                            "Stage ~g~"..Instance.Plants[Instance.ClosePlants[i]].Stage.."~w~/"..#Config.Plants[Instance.Plants[Instance.ClosePlants[i]].Type].Stages)
+                            DrawText3D(Instance.Plants[Instance.ClosePlants[i].index].Coords, 
+                            "Stage ~g~"..Instance.Plants[Instance.ClosePlants[i].index].Stage.."~w~/"..#Config.Plants[Instance.Plants[Instance.ClosePlants[i].index].Type].Stages)
 
                             DrawText3D(infoLoc, "Press [~g~E~w~] to harvest")
                             if IsControlJustReleased(0, 153) then
-                                Instance.Plants[Instance.ClosePlants[i]].Harvesting = true
+                                Instance.Plants[Instance.ClosePlants[i].index].Harvesting = true
                                 TriggerEvent("mythic_progbar:client:progress", {
                                     name = "harvesting_Plant",
                                     duration = 10000,
@@ -180,7 +189,7 @@ mainLoop = function() -- the main loop
                                     }
                                 }, function(status)
                                     if not status then
-                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[Instance.ClosePlants[i]])  -- trigger the server event to harvest a plant   
+                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[Instance.ClosePlants[i].index])  -- trigger the server event to harvest a plant   
                                     end
                                 end)
                             end

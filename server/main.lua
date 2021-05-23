@@ -28,6 +28,19 @@ AddEventHandler("weasel-plants:harvestPlant", function(plant)
     harvestPlant(source, plant)
 end)
 
+RegisterNetEvent("weasel-plants:updatePlant")
+AddEventHandler("weasel-plants:updatePlant", function(clientPlant)
+    local plant = nil
+    for i = 1, #Instance.Plants, 1 do
+        if Instance.Plants[i].ID == clientPlant.ID then
+            plant = Instance.Plants[i]
+            break
+        end
+    end
+    if plant == nil then return end
+    checkForUpdate(plant)
+end)
+
 AddEventHandler('onResourceStart', function(resourceName)
     loadPlants()
     while not Instance.isReady do
@@ -41,32 +54,11 @@ Instance.insert = function(plant)
     table.insert(Instance.Plants, plant)
 end
 
-mainLoop = function() -- Scarry server main loop
+mainLoop = function()
     Citizen.CreateThread(function() 
-        while true do
-            Citizen.Wait(0)
-            local now = os.time()
-            local plantsHandled = 0
-            for i = 1, #Instance.Plants, 1 do
-                Citizen.Wait(0)
-                if plant == nil then break end 
-                local plant = Instance.Plants[i] -- all tables in lua are handled as pointers so changes to these local vars will effect main Instance
-                local plantConfig = Config.Plants[plant.Type]
-                local plantStage = plantConfig.Stages[plant.Stage]
-                local growthTime = (plantStage.time * 60)
-                local soilQuality = plantConfig.Soil[plant.Soil] or 1.0 -- if not found set to 1.0
-                local nextStageTime = plant.Time + growthTime
-                if now >= nextStageTime then
-                    if plant.Stage < #plantConfig.Stages then
-                        plant.Stage = plant.Stage + 1
-                        plant.Time = now
-                        updatePlant(plant)
-                    else
-                        deletePlant(plant) -- last stage is death stage
-                    end
-                end
-            end
-            Citizen.Wait(1000)
+        Citizen.Wait(10*60000) -- Every 10 minutes
+        for i = 1, #Instance.Plants, 1 do
+            checkForUpdate(Instance.Plants[i])
         end
     end)
 end

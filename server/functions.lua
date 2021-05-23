@@ -78,6 +78,24 @@ harvestPlant = function(source, plant) -- server function to harvest a plant
     end
 end
 
+checkForUpdate = function(plant)
+    local now = os.time()
+    local plantConfig = Config.Plants[plant.Type]
+    local plantStage = plantConfig.Stages[plant.Stage]
+    local growthTime = (plantStage.time * 60)
+    local soilQuality = plantConfig.Soil[plant.Soil] or 1.0 -- if not found set to 1.0
+    local nextStageTime = plant.Time + growthTime
+    if now >= nextStageTime then
+        if plant.Stage < #plantConfig.Stages then
+            plant.Stage = plant.Stage + 1
+            plant.Time = now
+            updatePlant(plant)
+        else
+            deletePlant(plant) -- last stage is death stage
+        end
+    end
+end
+
 updatePlant = function(plant)
     MySQL.Async.execute("UPDATE `plants` SET `stage`=@stage WHERE id = @id;",
     {
