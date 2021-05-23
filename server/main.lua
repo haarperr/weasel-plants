@@ -28,17 +28,15 @@ AddEventHandler("weasel-plants:harvestPlant", function(plant)
     harvestPlant(source, plant)
 end)
 
-RegisterNetEvent("weasel-plants:updatePlant")
-AddEventHandler("weasel-plants:updatePlant", function(clientPlant)
-    local plant = nil
-    for i = 1, #Instance.Plants, 1 do
-        if Instance.Plants[i].ID == clientPlant.ID then
-            plant = Instance.Plants[i]
-            break
+RegisterNetEvent("weasel-plants:updatePlants")
+AddEventHandler("weasel-plants:updatePlants", function(clientPlants)
+    for x = 1, #clientPlants, 1 do
+        for i = 1, #Instance.Plants, 1 do
+            if Instance.Plants[i].ID == clientPlants[x] then
+                checkForUpdate(Instance.Plants[i])
+            end
         end
     end
-    if plant == nil then return end
-    checkForUpdate(plant)
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)

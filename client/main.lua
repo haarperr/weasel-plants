@@ -124,6 +124,8 @@ mainLoop = function() -- the main loop
     Citizen.CreateThread(function() 
         while true do
             Wait(0)
+            local needsUpdate = false
+            local toUpdate = {}
             if Instance.ClosePlants and #Instance.ClosePlants > 0 then
                 local coords = GetEntityCoords(GetPlayerPed(-1))
                 for i = 1, #Instance.ClosePlants, 1 do
@@ -145,7 +147,9 @@ mainLoop = function() -- the main loop
                             
                             addObject(Instance.ClosePlants[i].index)
                             if not Instance.ClosePlants[i].updated then
-                                TriggerServerEvent("weasel-plants:updatePlant", Instance.Plants[Instance.ClosePlants[i].index])
+                                
+                                table.insert( toUpdate, Instance.Plants[Instance.ClosePlants[i].index].ID)
+                                if not needsUpdate then needsUpdate = true end
                                 Instance.ClosePlants[i].updated = true
                             end
                         end
@@ -195,6 +199,9 @@ mainLoop = function() -- the main loop
                             end
                         end
                     end 
+                end
+                if needsUpdate then
+                    TriggerServerEvent("weasel-plants:updatePlants", toUpdate)
                 end
             end
         end
