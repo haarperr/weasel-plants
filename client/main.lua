@@ -207,3 +207,21 @@ mainLoop = function() -- the main loop
         end
     end)
 end
+
+Citizen.CreateThread(function()                     --farmers market
+    while true do
+        Wait(0)
+        local location      = GetEntityCoords(GetPlayerPed(-1))
+        local dist          = #(location - Config.FarmersMarketSelling)
+        if dist <= 1 then text='[~g~E~s~] '.. "Farmer's Market Selling"
+            if IsControlJustPressed(0, 38) then
+                Wait(10)
+                TriggerServerEvent('weasel-plants:sell')
+            end
+        else text = "Farmer's Market Selling" end
+        if dist <= 2 then DrawText3D(Config.FarmersMarketSelling, text) end
+        if dist <= 4 then
+            DrawMarker(2, Config.FarmersMarketSelling.x, Config.FarmersMarketSelling.y, Config.FarmersMarketSelling.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
+        end
+    end
+end)

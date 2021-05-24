@@ -28,6 +28,28 @@ AddEventHandler("weasel-plants:harvestPlant", function(plant)
     harvestPlant(source, plant)
 end)
 
+RegisterNetEvent("weasel-plants:sell")
+AddEventHandler("weasel-plants:sell", function()
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local tomatoCount = xPlayer.getInventoryItem('tomato')
+	local cornCount = xPlayer.getInventoryItem('corn')
+
+    if tomatoCount.count == nil then tomatoCount.count = 0 end
+    if cornCount.count == nil then cornCount.count = 0 end
+
+    if tomatoCount.count > 0 then 
+        xPlayer.removeInventoryItem('tomato', tomatoCount.count)
+        xPlayer.addInventoryItem('money', tomatoCount.count*Config.Prices.tomato)
+        
+    elseif cornCount.count > 0 then 
+        xPlayer.removeInventoryItem('corn', cornCount.count)
+        xPlayer.addInventoryItem('money', cornCount.count*Config.Prices.corn)
+    else 
+        xPlayer.showNotification('You do not have anymore produce')
+        xPlayer.exports['mythic_notify']:SendAlert('error', 'You dont have anything to sell')
+    end
+end)
+
 RegisterNetEvent("weasel-plants:updatePlants")
 AddEventHandler("weasel-plants:updatePlants", function(clientPlants)
     for x = 1, #clientPlants, 1 do
