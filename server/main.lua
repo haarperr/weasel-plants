@@ -31,9 +31,12 @@ end)
 RegisterNetEvent("weasel-plants:updatePlants")
 AddEventHandler("weasel-plants:updatePlants", function(clientPlants)
     for x = 1, #clientPlants, 1 do
+        Citizen.Wait(0)
         for i = 1, #Instance.Plants, 1 do
+            Citizen.Wait(0)
             if Instance.Plants[i].ID == clientPlants[x] then
                 checkForUpdate(Instance.Plants[i])
+                break
             end
         end
     end
@@ -56,6 +59,7 @@ mainLoop = function()
     Citizen.CreateThread(function() 
         Citizen.Wait(10*60000) -- Every 10 minutes
         for i = 1, #Instance.Plants, 1 do
+            Citizen.Wait(0)
             checkForUpdate(Instance.Plants[i])
         end
     end)
