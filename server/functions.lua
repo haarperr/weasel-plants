@@ -82,6 +82,7 @@ checkForUpdate = function(plant)
     local now = os.time()
     local plantConfig = Config.Plants[plant.Type]
     local plantStage = plantConfig.Stages[plant.Stage]
+    if plantStage == nil then return end
     local growthTime = (plantStage.time * 60)
     local soilQuality = plantConfig.Soil[plant.Soil] or 1.0 -- if not found set to 1.0
     local nextStageTime = plant.Time + growthTime
