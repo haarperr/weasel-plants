@@ -130,20 +130,20 @@ mainLoop = function() -- the main loop
                 local coords = GetEntityCoords(GetPlayerPed(-1))
                 for i = 1, #Instance.ClosePlants, 1 do
                     if not Instance.Plants[Instance.ClosePlants[i].index] then
+                        Instance.Plants[Instance.ClosePlants[i].index].Close = false
                         table.remove( Instance.ClosePlants, i )
-                        Instance.Plants[i].Close = false
                         break
                     end
                     local dist = #(Instance.Plants[Instance.ClosePlants[i].index].Coords - coords)
 
                     if dist > 100 then -- if we are far remove it
+                        Instance.Plants[Instance.ClosePlants[i].index].Close = false
                         table.remove( Instance.ClosePlants, i )
-                        Instance.Plants[i].Close = false
                         break
                     end
 
                     if dist <= Config.DrawDistance then
-                        if Instance.Plants[Instance.ClosePlants[i].index].Object == nil then -- If there is no object for the plant create one
+                        if Instance.Plants[Instance.ClosePlants[i].index].ObjectSpawned == false then -- If there is no object for the plant create one
                             
                             addObject(Instance.ClosePlants[i].index)
                             if not Instance.ClosePlants[i].updated then

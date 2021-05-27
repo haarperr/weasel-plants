@@ -27,6 +27,7 @@ addObject = function(index) -- Add the plants object to the game
         Citizen.Trace("Failed to load model for growth stage, but will retry shortly!\n")
         Citizen.Wait(2500)
     else
+        Instance.Plants[index].ObjectSpawned = true 
         local offset = Config.Plants[Instance.Plants[index].Type].Stages[Instance.Plants[index].Stage].offset or vector3(0,0,0)
         local object = CreateObject(model, Instance.Plants[index].Coords + offset, false, false, false)
         local heading = math.random(0,359) * 1.0
