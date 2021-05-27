@@ -99,16 +99,17 @@ closeLoop = function() -- close loop, for performance find plants that are close
                     break
                 end
 
-                if not Instance.Plants[i].Close then 
-                    local dist = #(Instance.Plants[i].Coords - coords)
-                    if dist <= 100 then
+                
+                local dist = #(Instance.Plants[i].Coords - coords)
+                if dist <= 100 then
+                    if not Instance.Plants[i].Close then
                         Instance.Plants[i].Close = true
                         table.insert( Instance.ClosePlants, {index = i, updated = false} )
-                        Instance.Plants[i].ClosePlantIndex = #Instance.ClosePlants
-                    elseif Instance.Plants[i].ClosePlantndex then
-                        table.remove(Instance.ClosePlants, Instance.Plants[i].ClosePlantIndex) 
-                        Instance.Plants[i].ClosePlantIndex = nil
                     end
+                    Instance.Plants[i].ClosePlantIndex = #Instance.ClosePlants
+                elseif Instance.Plants[i].ClosePlantndex then
+                    table.remove(Instance.ClosePlants, Instance.Plants[i].ClosePlantIndex) 
+                    Instance.Plants[i].ClosePlantIndex = nil
                 end
             end
         end
@@ -130,7 +131,6 @@ mainLoop = function() -- the main loop
                 local coords = GetEntityCoords(GetPlayerPed(-1))
                 for i = 1, #Instance.ClosePlants, 1 do
                     if not Instance.Plants[Instance.ClosePlants[i].index] then
-                        Instance.Plants[Instance.ClosePlants[i].index].Close = false
                         table.remove( Instance.ClosePlants, i )
                         break
                     end
@@ -143,7 +143,7 @@ mainLoop = function() -- the main loop
                     end
 
                     if dist <= Config.DrawDistance then
-                        if Instance.Plants[Instance.ClosePlants[i].index].ObjectSpawned == false then -- If there is no object for the plant create one
+                        if Instance.Plants[Instance.ClosePlants[i].index].Object == nil then -- If there is no object for the plant create one
                             
                             addObject(Instance.ClosePlants[i].index)
                             if not Instance.ClosePlants[i].updated then
