@@ -56,6 +56,7 @@ AddEventHandler("weasel-plants:updatePlants", function(clientPlants)
         Citizen.Wait(0)
         for i = 1, #Instance.Plants, 1 do
             Citizen.Wait(0)
+            if Instance.Plants[i] == nil then return end
             if Instance.Plants[i].ID == clientPlants[x] then
                 checkForUpdate(Instance.Plants[i])
                 break

@@ -74,6 +74,7 @@ harvestPlant = function(source, plant) -- server function to harvest a plant
         xPlayer.addInventoryItem(Config.Plants[plant.Type].Item, math.random(Config.Plants[plant.Type].Stages[plant.Stage].yield[1], Config.Plants[plant.Type].Stages[plant.Stage].yield[2]))
         xPlayer.addInventoryItem(Config.Plants[plant.Type].Seed, math.random(Config.Plants[plant.Type].SeedYield[1], Config.Plants[plant.Type].SeedYield[2]))
     else
+        print("Plant destroyed at stage: "..plant.Stage.." with type: "..plant.Type.." by ID:"..source)
         success(source, "You destroyed a ".. Config.Plants[plant.Type].Name)
     end
 end
