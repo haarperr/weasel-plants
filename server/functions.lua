@@ -80,6 +80,7 @@ harvestPlant = function(source, plant) -- server function to harvest a plant
 end
 
 checkForUpdate = function(plant)
+    if plant == nil then return end
     local now = os.time()
     local plantConfig = Config.Plants[plant.Type]
     local plantStage = plantConfig.Stages[plant.Stage]
