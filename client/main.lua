@@ -51,27 +51,23 @@ end)
 
 RegisterNetEvent("weasel-plants:addPlant") -- addPLant will add a plant to the table
 AddEventHandler("weasel-plants:addPlant", function(plant)
-    table.insert( Instance.Plants, plant )
+    Instance.Plants[plant.ID] = plant
 end)
 
 RegisterNetEvent("weasel-plants:removePlant") -- RemovePlant will remvoe a plant with a matching id from table and delete its object
-AddEventHandler("weasel-plants:removePlant", function(plant)
-    for i = 1, #Instance.Plants, 1 do
-        if Instance.Plants[i] and Instance.Plants[i].ID == plant.ID then
-            DeleteObject(Instance.Plants[i].Object)
-            table.remove(Instance.Plants, i)
-        end
+AddEventHandler("weasel-plants:removePlant", function(index)
+    if Instance.Plants[index] ~= nil and Instance.Plants[index].Object ~= nil then
+        DeleteObject(Instance.Plants[index].Object)
     end
+    Instance.Plants[index] = nil
 end)
 
 RegisterNetEvent("weasel-plants:sync") -- sync will just sync 1 plant and delete its object
 AddEventHandler("weasel-plants:sync", function(plant)
-    for i = 1, #Instance.Plants, 1 do
-        if Instance.Plants[i].ID == plant.ID then
-            DeleteObject(Instance.Plants[i].Object)
-            Instance.Plants[i] = plant
-        end
+    if Instance.Plants[plant.ID] ~= nil and Instance.Plants[plant.ID].Object ~= nil then
+        DeleteObject(Instance.Plants[plant.ID].Object)
     end
+    Instance.Plants[plant.ID] = plant
 end)
 
 RegisterNetEvent("weasel-plants:fullSync") -- full sync will overwrite the Plants table and start the main loop
@@ -81,7 +77,7 @@ AddEventHandler("weasel-plants:fullSync", function(plants)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName) -- delete all objects when the resource stops
-    for i = 1, #Instance.Plants, 1 do
+    for i, v in pairs(Instance.Plants) do
         if Instance.Plants[i].Object ~= nil then
             DeleteObject(Instance.Plants[i].Object)
         end
@@ -94,7 +90,7 @@ closeLoop = function() -- close loop, for performance find plants that are close
         while true do
             Citizen.Wait(3000)
             local coords = GetEntityCoords(GetPlayerPed(-1))
-            for i = 1, #Instance.Plants, 1 do
+            for i, v in pairs(Instance.Plants) do
                 if not Instance.Plants[i] then
                     break
                 end
@@ -194,7 +190,7 @@ mainLoop = function() -- the main loop
                                     }
                                 }, function(status)
                                     if not status then
-                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[Instance.ClosePlants[i].index])  -- trigger the server event to harvest a plant   
+                                        TriggerServerEvent("weasel-plants:harvestPlant", Instance.ClosePlants[i].index)  -- trigger the server event to harvest a plant   
                                     end
                                     done = true 
                                 end)

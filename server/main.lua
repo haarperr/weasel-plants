@@ -11,10 +11,6 @@ end)
 
 RegisterNetEvent("weasel-plants:plantSeed")
 AddEventHandler("weasel-plants:plantSeed", function(plant)
-    while not Instance.isReady do
-        Wait(0)
-    end
-
     plantSeed(plant, source)
 end)
 
@@ -24,8 +20,8 @@ AddEventHandler("weasel-plants:requestFullSync", function()
 end)
 
 RegisterNetEvent("weasel-plants:harvestPlant")
-AddEventHandler("weasel-plants:harvestPlant", function(plant)
-    harvestPlant(source, plant)
+AddEventHandler("weasel-plants:harvestPlant", function(id)
+    harvestPlant(source, id)
 end)
 
 RegisterNetEvent("weasel-plants:sell")
@@ -53,14 +49,8 @@ end)
 RegisterNetEvent("weasel-plants:updatePlants")
 AddEventHandler("weasel-plants:updatePlants", function(clientPlants)
     for x = 1, #clientPlants, 1 do
-        Citizen.Wait(0)
-        for i = 1, #Instance.Plants, 1 do
-            Citizen.Wait(0)
-            if Instance.Plants[i] == nil then return end
-            if Instance.Plants[i].ID == clientPlants[x] then
-                checkForUpdate(Instance.Plants[i])
-                break
-            end
+        if Instance.Plants[clientPlants[x]] ~= nil then
+            checkForUpdate(Instance.Plants[clientPlants[x]])
         end
     end
 end)
@@ -75,13 +65,13 @@ AddEventHandler('onResourceStart', function(resourceName)
 end)
   
 Instance.insert = function(plant)
-    table.insert(Instance.Plants, plant)
+    Instance.Plants[plant.ID] = plant
 end
 
 mainLoop = function()
     Citizen.CreateThread(function() 
         Citizen.Wait(10*60000) -- Every 10 minutes
-        for i = 1, #Instance.Plants, 1 do
+        for i, v in pairs(Instance.Plants) do
             Citizen.Wait(0)
             checkForUpdate(Instance.Plants[i])
         end

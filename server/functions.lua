@@ -49,34 +49,31 @@ loadPlants = function() -- Load all plants from DB
     end)
 end
 
-deletePlant = function(plant) -- delete a plant off the face of the earth and then some
+deletePlant = function(id) -- delete a plant off the face of the earth and then some
     MySQL.Async.execute("DELETE FROM `plants` WHERE id = @id",
     {
-        ['@id'] = plant.ID 
+        ['@id'] = id 
     },function(affectedRows)
-        for i = 1, #Instance.Plants, 1 do
-            if Instance.Plants[i].ID == plant.ID then
-                table.remove( Instance.Plants, i)
-                TriggerClientEvent("weasel-plants:removePlant", -1, plant)
-                break
-            end
-        end
+        Instance.Plants[id] = nil
+        TriggerClientEvent("weasel-plants:removePlant", -1, id)
     end)
 end
 
-harvestPlant = function(source, plant) -- server function to harvest a plant
+harvestPlant = function(source, id) -- server function to harvest a plant
+    local plant = Instance.Plants[id]
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer == nil then return end
     
-    deletePlant(plant)
     if Config.Plants[plant.Type].Stages[plant.Stage].yield then
         success(source, "You harvested a ".. Config.Plants[plant.Type].Name)
-        xPlayer.addInventoryItem(Config.Plants[plant.Type].Item, math.random(Config.Plants[plant.Type].Stages[plant.Stage].yield[1], Config.Plants[plant.Type].Stages[plant.Stage].yield[2]))
+        xPlayer.addInventoryItem(Config.Plants[plant.Type].Item, math.random(Config.Plants[plant.Type].Stages[plant.Stage].yield[1], 
+        Config.Plants[plant.Type].Stages[plant.Stage].yield[2]))
         xPlayer.addInventoryItem(Config.Plants[plant.Type].Seed, math.random(Config.Plants[plant.Type].SeedYield[1], Config.Plants[plant.Type].SeedYield[2]))
     else
         print("Plant destroyed at stage: "..plant.Stage.." with type: "..plant.Type.." by ID:"..source)
         success(source, "You destroyed a ".. Config.Plants[plant.Type].Name)
     end
+    deletePlant(plant.ID)
 end
 
 checkForUpdate = function(plant)
@@ -94,7 +91,7 @@ checkForUpdate = function(plant)
             plant.Time = now
             updatePlant(plant)
         else
-            deletePlant(plant) -- last stage is death stage
+            deletePlant(plant.ID) -- last stage is death stage
         end
     end
 end

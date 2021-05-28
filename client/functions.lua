@@ -66,7 +66,7 @@ end
 
 plantSeed = function(type) -- Check for soil type and slope angle before planting a seed and sending it to server.
     local ped = GetPlayerPed(-1)
-    for i = 1, #Instance.Plants, 1 do -- Check spacing between plants
+    for i, v in pairs(Instance.Plants) do -- Check spacing between plants
         if #(Instance.Plants[i].Coords - GetEntityCoords(ped)) <= Config.MinSpace then
             error("Plants need more space!")
             return
