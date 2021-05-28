@@ -174,6 +174,7 @@ mainLoop = function() -- the main loop
 
                             DrawText3D(infoLoc, "Press [~g~E~w~] to harvest")
                             if IsControlJustReleased(0, 153) then
+                                local done = false
                                 Instance.Plants[Instance.ClosePlants[i].index].Harvesting = true
                                 TriggerEvent("mythic_progbar:client:progress", {
                                     name = "harvesting_Plant",
@@ -195,7 +196,9 @@ mainLoop = function() -- the main loop
                                     if not status then
                                         TriggerServerEvent("weasel-plants:harvestPlant", Instance.Plants[Instance.ClosePlants[i].index])  -- trigger the server event to harvest a plant   
                                     end
+                                    done = true 
                                 end)
+                                while not done do Wait(0) end
                             end
                         end
                     end 
