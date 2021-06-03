@@ -3,6 +3,8 @@ Config = {
     DrawDistance = 50,
     MinSpace = 2,
     FarmersMarketSelling = vector3(1679.35, 4883.26, 42.04),
+    RadiousReport = 100,
+    MaxCountReport = 50,
     Prices = {
         tomato = 2,
         corn   = 8
@@ -14,7 +16,8 @@ Config = {
         {
             Name = "Weed Plant",
             Seed = "weed_seed",
-            SeedYield = {1, 5},
+            Illigal = true,
+            SeedYield = {0, 2},
             Item = "weed",
             MaxAngle = 0.6,
             Stages = {
@@ -22,8 +25,8 @@ Config = {
                 {model = `prop_weed_02`, offset = vector3(0,0,-1.8), time = 60},
                 {model = `prop_weed_02`, offset = vector3(0,0,-1.4), time = 60},
                 {model = `prop_weed_02`, offset = vector3(0,0,-1), time = 60},
-                {model = `prop_weed_01`, offset = vector3(0,0,-1.5), time = 60, yield = {100, 125}},
-                {model = `prop_weed_01`, offset = vector3(0,0,-1), time = 520, yield = {130, 160}}
+                {model = `prop_weed_01`, offset = vector3(0,0,-1.5), time = 60, yield = {1, 50}},
+                {model = `prop_weed_01`, offset = vector3(0,0,-1), time = 520, yield = {75, 100}}
             },
             Soil = {
                 [2409420175] = 1.0,
@@ -46,6 +49,7 @@ Config = {
         {
             Name = "Coke Plant",
             Seed = "coke_seed",
+            Illigal = true,
             SeedYield = {1, 5},
             Item = "coca_leaf",
             MaxAngle = 0.6,
@@ -78,6 +82,7 @@ Config = {
         {
             Name = "Corn Plant",
             Seed = "corn_seed",
+            Illigal = false,
             SeedYield = {0},
             Item = "corn",
             MaxAngle = 0.6,
@@ -109,6 +114,7 @@ Config = {
         {
             Name = "Tomato Plant",
             Seed = "tomato_seed",
+            Illigal = false,
             SeedYield = {1,4},
             Item = "tomato",
             MaxAngle = 0.6,
@@ -133,6 +139,34 @@ Config = {
                 [2128369009] = 0.8,
                 [-461750719] = 1.0,
                 [-1286696947] = 1.0,
+            }
+        },
+        {
+            Name = "Acacia Plant",
+            Seed = "acacia_seed",
+            SeedYield = {1,3},
+            Item = "acacia_bark",
+            MaxAngle = 0.6,
+            Stages = {
+                {model = `prop_coral_spikey_01`, offset = vector3(0,0,-3.6), time = 1},
+                {model = `prop_pot_plant_03a`, offset = vector3(0,0,-2.98), time = 1},
+                {model = `prop_pot_plant_03a`, offset = vector3(0,0,-2.15), time = 520, yield = {25, 45}}
+            },
+            Soil = {
+                [2409420175] = 1.0,
+                [3008270349] = 0.8,
+                [3833216577] = 1.0,
+                [223086562] = 1.1,
+                [1333033863] = 0.9,
+                [4170197704] = 1.0,
+                [3594309083] = 0.8,
+                [2461440131] = 0.8,
+                [1109728704] = 1.5,
+                [2352068586] = 1.1,
+                [1144315879] = 0.9,
+                [581794674] = 1.1,
+                [2128369009] = 0.8,
+                [-461750719] = 1.0,
             }
         }
     }

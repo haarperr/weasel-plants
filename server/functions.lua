@@ -7,6 +7,24 @@ success = function(source, msg)
     TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'success', text = msg, length = 4500 })
 end
 
+checkNotify = function(id)
+    local plant = Instance.Plants[id]
+    local plantCount = 1
+    if Config.Plants[plant.Type].Illigal then
+        for k, v in pairs(Instance.Plants) do 
+            if k ~= id and #(Instance.Plants[k].Coords - plant.Coords) <= Config.RadiousReport then
+                plantCount = plantCount + 1
+            end
+        end
+    end
+
+    if plantCount >= Config.MaxCountReport then
+        local data = {displayCode = '420', description = 'Large drug field', isImportant = 1, recipientList = {'police'}, length = '4000'}
+        local dispatchData = {dispatchData = data, caller = 'Local', coords = plant.Coords}
+        TriggerEvent('wf-alerts:svNotify', dispatchData)
+    end
+end
+
 plantSeed = function(plant, source) -- Add plant to DB and to all clients
     local xPlayer = ESX.GetPlayerFromId(source)
     if not xPlayer then return end
@@ -21,6 +39,7 @@ plantSeed = function(plant, source) -- Add plant to DB and to all clients
         plant.ID = id
         plant.Time = os.time()
         Instance.insert(plant)
+        checkNotify(id)
         if Config.Debug then
             print("New plant has been planted at "..plant.Coords.." With a ID of ".. plant.ID)
         end
